@@ -85,7 +85,7 @@ setInterval(() => {
             }, 2000);
         }
     });
-}, 5000);
+}, 3000);
 
 setInterval(() => {
     localStorage.setItem("emails", JSON.stringify(emails));
@@ -97,4 +97,4 @@ let periods = 1;
 setInterval(() => {
     document.getElementById("waiting").innerText = waiting_text + ".".repeat(periods);
     periods = Math.max(1, (periods + 1) % 4);
-}, 1000);
+}, 900);
