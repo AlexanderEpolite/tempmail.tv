@@ -22,7 +22,7 @@ function clearLS() {
     localStorage.removeItem("creation_time");
 }
 
-if(emails.length > 0) {
+if(emails && emails.length && emails.length > 0) {
     document.getElementById("click_prompt").style.display = "block";
 }
 
@@ -66,26 +66,32 @@ setInterval(() => {
         }
         
         //if there are new emails
-        if(data.email instanceof Array) {
+        if(data.email instanceof Array && data.email.length > 0) {
             document.getElementById("click_prompt").style.display = "block";
             
             let old_size = emails.length;
             
             data.email.forEach(email => {
                 createEmailElement(email.from, email.to, email.subject, email.body, email.html, email.date);
+                
+                //if the page is not visible, add an identifier to the title until the user goes back on
+                if(document.hidden) {
+                    const identifier = "(1)";
+                    
+                    if(document.title.indexOf(identifier) === -1) {
+                        document.title = identifier + " " + document.title;
+                        
+                        document.addEventListener("visibilitychange", () => {
+                            document.title = document.title.replace(identifier, "");
+                        });
+                    }
+                }
             });
             
             emails.push(...data.email);
-            
-            //reload if the emails haven't displayed (kind of a duct tape solution, but whatever)
-            setTimeout(() => {
-                if(old_size !== document.getElementById("email_list").children.length - 1) {
-                    location.reload();
-                }
-            }, 2000);
         }
     });
-}, 3000);
+}, 5000);
 
 setInterval(() => {
     localStorage.setItem("emails", JSON.stringify(emails));
@@ -97,4 +103,4 @@ let periods = 1;
 setInterval(() => {
     document.getElementById("waiting").innerText = waiting_text + ".".repeat(periods);
     periods = Math.max(1, (periods + 1) % 4);
-}, 900);
+}, 1000);
